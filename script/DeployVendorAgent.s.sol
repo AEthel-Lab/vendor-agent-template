@@ -70,7 +70,7 @@ contract DeployVendorAgent is Script {
             //
             //  ✓ Good:  "agent_python_coding"
             //  ✗ Bad:   "My Agent!", "pythonCoding", "0xABC..."
-            "agent_your_unique_id",
+            "agent_your_unique_id",   // ← CHANGE THIS VALUE
 
             // ── 2. PRICE ──────────────────────────────────────────────────
             //  Value set above in MY_PRICE_USDC.
