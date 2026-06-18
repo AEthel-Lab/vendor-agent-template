@@ -1,58 +1,160 @@
-# Æthel Labs Vendor Agent Template
+# Æthel Labs — Vendor Agent Template
 
-A streamlined, production-grade Foundry development starter kit for compiling, testing, and listing autonomous agents on the Æthel Labs decentralized infrastructure marketplace.
+> List your autonomous AI agent on the Æthel Labs decentralised marketplace in under 10 minutes.
 
-##  Onboarding & Setup Sequence
+Buyers pay you directly in USDC. 95 % of every sale goes straight to your wallet. No backend, no custody.
 
+---
 
-### 1. Prerequisite Installations
-Ensure you have the core Foundry toolchain installed on your local environment. If you do not have it, initialize it by executing:
+## Quick Start
+
+### 1 — Install Foundry
+
 ```bash
-curl -L [https://foundry.paradigm.xyz](https://foundry.paradigm.xyz) | bash
+curl -L https://foundry.paradigm.xyz | bash
 foundryup
 ```
 
-## 2 Repository Initialization
-Clone this template repository under the active corporate namespace and pull down the standard testing packages:
+### 2 — Clone & install dependencies
+
 ```bash
-git clone [https://github.com/AEthel-Lab/vendor-agent-template.git](https://github.com/AEthel-Lab/vendor-agent-template.git)
+git clone https://github.com/AEthel-Lab/vendor-agent-template.git
 cd vendor-agent-template
 make install
 ```
 
-## 3 Environment Allocation 
+### 3 — Set your private key
+
 ```bash
 cp .env.example .env
 ```
 
-Open the newly created `.env` file in your preferred text editor and input your cryptographic private key string into the `PRIVATE_KEY` variable slot.
+Open `.env` and paste your wallet private key:
 
-⚠️ CRITICAL SECURITY WARNING: Never commit real active private keys to public source repositories. The automation pipeline explicitly runs a runtime interception check that forcefully crashes and rejects the transaction if default local testing framework keys (such as Anvil/Hardhat Account #0) are detected, protecting you from losing gas funds.
+```
+PRIVATE_KEY=0xYOUR_PRIVATE_KEY_HERE
+```
 
-## 4 Configure Agent Parameters
+> ⚠️ **Never commit your `.env` file.** It is already listed in `.gitignore`.  
+> Use a dedicated deployment wallet, not your main wallet.
 
-Navigate to `script/DeployVendorAgent.s.sol` and modify the fields directly inside the designated DEV CONFIGURATION ZONE:
-                                                            
-`myAgentId`: Assign a unique alphanumeric identifier string for your agent.
+---
 
-`myPriceUSDC`: Define your access licensing price point denominated in 6-decimals (e.g., $5.00 = 5000000).
+## Configure Your Agent
 
-`myMetadata`: Paste the exact string payload compiled for you by our Interactive Metadata Builder at `[https://docs.aethellabs.xyz]`.
+Open `script/DeployVendorAgent.s.sol` and fill in the three values inside the **DEV CONFIGURATION ZONE**.
 
+### Field 1 — Agent ID
 
-## 5 Local Risk-Free Simulation
+Your permanent, unique on-chain identifier.
+
+**Format rules:**
+- Lowercase letters, numbers, and underscores **only**
+- Must start with the `agent_` prefix
+- No spaces, hyphens, capital letters, or special characters
+- Choose carefully — this key is **immutable** once listed
+
+```
+✓  agent_python_coding
+✓  agent_solidity_auditor
+✓  agent_dex_arbitrage_bot
+✓  agent_sentiment_nlp
+✗  "My Agent"          ← spaces not allowed
+✗  "pythonCoding"      ← missing prefix, camelCase not allowed
+✗  "agent-python"      ← hyphens not allowed
+```
+
+---
+
+### Field 2 — Price (USDC)
+
+USDC uses **6 decimal places**. Multiply your dollar price by `1_000_000`.
+
+| You want to charge | Set this value |
+|---|---|
+| Free (test) | `1` |
+| $1.00 USDC | `1_000_000` |
+| $5.00 USDC | `5_000_000` |
+| $10.00 USDC | `10_000_000` |
+| $15.00 USDC | `15_000_000` |
+| $25.00 USDC | `25_000_000` |
+
+> `0` is rejected by the contract. Use `1` for a free/test listing.
+
+---
+
+### Field 3 — Metadata JSON
+
+This JSON string is stored on-chain and rendered directly in the marketplace card UI. **All fields are required.**
+
+```json
+{
+  "title":       "Python Code Optimizer",
+  "description": "Automated syntax auditing, dynamic memory leak tracing, and algorithmic optimizations tailored for execution pipelines.",
+  "icon":        "Code",
+  "category":    "Programming",
+  "tags":        ["Optimization", "Python", "Tool"]
+}
+```
+
+#### `title` — Display name on the marketplace card
+- This is the **first thing buyers read** — make it clear and specific
+- Recommended max: **40 characters**
+- Examples: `"Solidity Auditor Engine"`, `"Cross-DEX Arbitrageur"`, `"Social Sentiment Parser"`
+
+#### `description` — One-sentence pitch
+- Explain **what the agent does** and **who it helps**
+- Hard limit: the entire JSON string must be under **512 characters**
+
+#### `icon` — Card icon (pick one)
+
+| Value | Icon shown |
+|---|---|
+| `"Code"` | Code / programming symbol |
+| `"ShieldCheck"` | Shield / security badge |
+| `"ChartLine"` | Line chart / finance |
+| `"Translate"` | Language / NLP |
+| `"FileText"` | Document / content |
+| `"Gear"` | Settings / general utility |
+
+#### `category` — Grouping label
+Free text. Keep it short. Examples: `"Programming"`, `"Security"`, `"DeFi"`, `"Finance"`, `"Social"`, `"Data"`
+
+#### `tags` — Keywords (max 3)
+Short strings used for search filtering. Example: `["Audit", "Solidity", "Security"]`
+
+> **Important:** Paste the JSON as a **single line** (no newlines) in the Solidity string.
+
+---
+
+## Dry Run (simulate — no gas spent)
+
 ```bash
 make list-agent-dry
 ```
-## 6 Live Deployment
+
+Run this first to verify your configuration is correct before broadcasting.
+
+---
+
+## Go Live
+
 ```bash
 make list-agent-live
 ```
 
-##  Protocol Specifications & Mechanics
+Your agent will appear in the [Æthel Labs Marketplace](https://docs.aethellabs.xyz) within seconds of the transaction confirming.
 
-95/5 Automated Fee Settlement: The underlying smart contracts operate on a trustless, zero-custody routing mechanism. The moment a user licenses your agent, 95% of the USDC payment is natively pushed directly to your developer registration wallet address, while a 5% platform cut is funneled to the protocol treasury.
+---
 
-Metadata Sanitization Constraints: To maintain frontend layout fidelity and system security, all text passed via the `metadataUri` string fields goes through an automated client-side sanitization layer. All raw HTML, inline event triggers, and `javascript:` hooks are aggressively stripped, and inputs are capped at a hard limit of  `512`characters
+## Protocol Rules
 
-Immutable Lifecycle Management: Only the original developer wallet that signed the deployment transaction has authorization rights to call operational adjustments, modify structural parameter values via `setAgentMetadata` or remove listings using `delistAgent`.
+| Rule | Detail |
+|---|---|
+| **Revenue split** | 95% to your wallet · 5% protocol fee |
+| **Metadata limit** | 512 characters total for the JSON string |
+| **Ownership** | Only your deployment wallet can update or delist |
+| **Update metadata** | Call `setAgentMetadata(agentId, newJson)` |
+| **Delist** | Call `delistAgent(agentId)` |
+| **Network** | ARC Testnet (Chain ID: 5042002) |
+| **Marketplace contract** | `0xD3362dB9Afa0D9e0FA6Eb9909527BFb6693AAe53` |
