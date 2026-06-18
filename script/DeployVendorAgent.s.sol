@@ -44,6 +44,23 @@ contract DeployVendorAgent is Script {
         // ░░░  DEV CONFIGURATION ZONE — edit only the values below  ░░░░░░░
         // ═══════════════════════════════════════════════════════════════════
 
+        // ╔═══════════════════════════════════════════════════════════════╗
+        // ║  SET YOUR PRICE HERE                                          ║
+        // ║                                                               ║
+        // ║  USDC uses 6 decimal places — multiply your dollar amount     ║
+        // ║  by 1_000_000.                                                ║
+        // ║                                                               ║
+        // ║   Free / Test   →             1                               ║
+        // ║   $1.00 USDC    →     1_000_000                               ║
+        // ║   $5.00 USDC    →     5_000_000                               ║
+        // ║   $10.00 USDC   →    10_000_000                               ║
+        // ║   $15.00 USDC   →    15_000_000                               ║
+        // ║   $25.00 USDC   →    25_000_000                               ║
+        // ║                                                               ║
+        // ║  NOTE: 0 is rejected by the contract. Use 1 for free.        ║
+        // ╚═══════════════════════════════════════════════════════════════╝
+        uint256 MY_PRICE_USDC = 1; // ← CHANGE THIS VALUE
+
         market.listAgent(
             // ── 1. AGENT ID ───────────────────────────────────────────────
             //  Must be unique across the marketplace.
@@ -55,17 +72,9 @@ contract DeployVendorAgent is Script {
             //  ✗ Bad:   "My Agent!", "pythonCoding", "0xABC..."
             "agent_your_unique_id",
 
-            // ── 2. PRICE (USDC, 6 decimals) ───────────────────────────────
-            //  Multiply your USD price by 1_000_000.
-            //  Set to  1  to offer the agent for free (zero is rejected).
-            //
-            //  Examples:
-            //    Free         →     1
-            //    $1.00 USDC   →     1_000_000
-            //    $5.00 USDC   →     5_000_000
-            //    $15.00 USDC  →    15_000_000
-            //    $25.00 USDC  →    25_000_000
-            1, // TODO: set your price
+            // ── 2. PRICE ──────────────────────────────────────────────────
+            //  Value set above in MY_PRICE_USDC.
+            MY_PRICE_USDC,
 
             // ── 3. METADATA JSON ──────────────────────────────────────────
             //  All fields are rendered in the marketplace card UI.
